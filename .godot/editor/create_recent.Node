@@ -1,0 +1,15 @@
+AudioStreamPlayer
+AudioStreamPlayer2D
+CollisionShape2D
+StaticBody2D
+TextureRect
+TextureButton
+HBoxContainer
+Timer
+Node2D
+Sprite2D
+CanvasLayer
+Area2D
+VisibleOnScreenNotifier2D
+CharacterBody2D
+Control

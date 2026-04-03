@@ -1,0 +1,145 @@
+[gd_scene load_steps=17 format=3 uid="uid://dglvpb7idxqdk"]
+
+[ext_resource type="Script" path="res://scene/Actor/player.gd" id="1_icvw3"]
+[ext_resource type="Texture2D" uid="uid://bs33jor64vdj8" path="res://assets/Sprite/bluebird-downflap.png" id="1_m38ea"]
+[ext_resource type="Texture2D" uid="uid://c7gh3tj264rri" path="res://assets/Sprite/bluebird-midflap.png" id="2_y8fnu"]
+[ext_resource type="Texture2D" uid="uid://cq3spv1uu1kkx" path="res://assets/Sprite/bluebird-upflap.png" id="3_gov56"]
+[ext_resource type="Texture2D" uid="uid://dc1o60rxw4l32" path="res://assets/Sprite/redbird-downflap.png" id="4_246n2"]
+[ext_resource type="Texture2D" uid="uid://yur17ln0eca4" path="res://assets/Sprite/redbird-midflap.png" id="5_wnjy4"]
+[ext_resource type="Texture2D" uid="uid://dfnxh33pemilq" path="res://assets/Sprite/redbird-upflap.png" id="6_2qnol"]
+[ext_resource type="Texture2D" uid="uid://ceh3iyql0lhja" path="res://assets/Sprite/yellowbird-downflap.png" id="7_1nh2n"]
+[ext_resource type="Texture2D" uid="uid://iw2w42j7qjax" path="res://assets/Sprite/yellowbird-midflap.png" id="8_h6k22"]
+[ext_resource type="Texture2D" uid="uid://cltrgwgsuil5b" path="res://assets/Sprite/yellowbird-upflap.png" id="9_ea6xg"]
+[ext_resource type="AudioStream" uid="uid://w4360fo0jric" path="res://assets/Music/wing.ogg" id="11_0gp48"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fjbkp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_m38ea")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_y8fnu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_gov56")
+}],
+"loop": true,
+"name": &"blue_flap",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_246n2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_wnjy4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_2qnol")
+}],
+"loop": true,
+"name": &"red_flap",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_1nh2n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_h6k22")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_ea6xg")
+}],
+"loop": true,
+"name": &"yellow_flap",
+"speed": 3.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3fdig"]
+radius = 12.0
+
+[sub_resource type="Animation" id="Animation_4w0ii"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_qfr3j"]
+resource_name = "get_ready"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -16)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape2D:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -16)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_it61x"]
+_data = {
+"RESET": SubResource("Animation_4w0ii"),
+"get_ready": SubResource("Animation_qfr3j")
+}
+
+[node name="Player" type="Area2D"]
+visible = false
+script = ExtResource("1_icvw3")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_fjbkp")
+animation = &"blue_flap"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_3fdig")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_it61x")
+}
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("11_0gp48")
+attenuation = 2.92817
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

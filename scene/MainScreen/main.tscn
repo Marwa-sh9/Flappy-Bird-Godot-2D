@@ -1,0 +1,58 @@
+[gd_scene load_steps=9 format=3 uid="uid://dis3cs7tmfwi2"]
+
+[ext_resource type="Script" path="res://scene/MainScreen/main.gd" id="1_0talq"]
+[ext_resource type="PackedScene" uid="uid://da06oxoihepgc" path="res://scene/UserInterface/bg.tscn" id="1_uau5h"]
+[ext_resource type="PackedScene" uid="uid://dglvpb7idxqdk" path="res://scene/Actor/player.tscn" id="2_6odkl"]
+[ext_resource type="Texture2D" uid="uid://bysawiy1ofi1e" path="res://assets/Sprite/background-day.png" id="2_dyq6h"]
+[ext_resource type="Script" path="res://scene/Object/pipe_spawner.gd" id="2_febfy"]
+[ext_resource type="AudioStream" uid="uid://g7m2ulsobngm" path="res://assets/Music/point.ogg" id="4_n2ctw"]
+[ext_resource type="PackedScene" uid="uid://dsixbarqw11qg" path="res://scene/UserInterface/hud.tscn" id="6_6r3is"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hvnqj"]
+size = Vector2(288, 56)
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0talq")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -102
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer"]
+position = Vector2(144, 256)
+texture = ExtResource("2_dyq6h")
+
+[node name="pipe_spawner" type="Node2D" parent="CanvasLayer"]
+position = Vector2(336, 192)
+script = ExtResource("2_febfy")
+
+[node name="Timer" type="Timer" parent="CanvasLayer/pipe_spawner"]
+wait_time = 1.5
+
+[node name="PointScored" type="AudioStreamPlayer2D" parent="CanvasLayer/pipe_spawner"]
+stream = ExtResource("4_n2ctw")
+attenuation = 4.59479
+
+[node name="BG" parent="." instance=ExtResource("1_uau5h")]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="BG"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BG/StaticBody2D"]
+position = Vector2(144, 428)
+shape = SubResource("RectangleShape2D_hvnqj")
+
+[node name="Player" parent="." instance=ExtResource("2_6odkl")]
+position = Vector2(104, 192)
+
+[node name="HUD" parent="." instance=ExtResource("6_6r3is")]
+layout_mode = 1
+
+[connection signal="score_updated" from="CanvasLayer/pipe_spawner" to="HUD" method="_on_score_updated"]
+[connection signal="timeout" from="CanvasLayer/pipe_spawner/Timer" to="CanvasLayer/pipe_spawner" method="_on_timer_timeout"]
+[connection signal="gameover" from="Player" to="." method="_on_gameover"]
+[connection signal="startGame" from="HUD" to="." method="_on_start_game"]
